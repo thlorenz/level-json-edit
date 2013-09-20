@@ -1,7 +1,7 @@
 {
   "name": "level-json-edit",
   "version": "0.0.0",
-  "description": "Takes editing json to the next level with multilevel.",
+  "description": "Taking editing json to the next level with multilevel and hulk.",
   "main": "index.js",
   "scripts": {
     "test": "echo 'todo: tap test/*.js'"
