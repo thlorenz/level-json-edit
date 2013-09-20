@@ -1,29 +1,39 @@
 {
-    "name" : "level-json-edit",
-    "version" : "0.0.0",
-    "description" : "Takes editing json to the next level with multilevel.",
-    "main" : "index.js",
-    "scripts" : {
-      "test" :  "echo 'todo: tap test/*.js'"
-    },
-    "repository" : {
-      "type" : "git",
-      "url" : "git://github.com/thlorenz/level-json-edit.git"
-    },
-    "homepage" : "https://github.com/thlorenz/level-json-edit",
-    "dependencies" : {
-    },
-    "devDependencies" : {
-    },
-    "keywords": [ "edit", "json", "level", "multilevel", "browser", "ui" ] ,
-    "author" : {
-      "name" : "Thorsten Lorenz",
-      "email" : "thlorenz@gmx.de",
-      "url" : "http://thlorenz.com"
-    },
-    "license" : {
-      "type": "MIT",
-      "url": "https://github.com/thlorenz/level-json-edit/blob/master/LICENSE"
-    },
-    "engine" : { "node" : ">=0.10" }
+  "name": "level-json-edit",
+  "version": "0.0.0",
+  "description": "Takes editing json to the next level with multilevel.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo 'todo: tap test/*.js'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/thlorenz/level-json-edit.git"
+  },
+  "homepage": "https://github.com/thlorenz/level-json-edit",
+  "dependencies": {
+    "multilevel": "~5.5.0",
+    "browserify": "~2.32.2"
+  },
+  "devDependencies": {},
+  "keywords": [
+    "edit",
+    "json",
+    "level",
+    "multilevel",
+    "browser",
+    "ui"
+  ],
+  "author": {
+    "name": "Thorsten Lorenz",
+    "email": "thlorenz@gmx.de",
+    "url": "http://thlorenz.com"
+  },
+  "license": {
+    "type": "MIT",
+    "url": "https://github.com/thlorenz/level-json-edit/blob/master/LICENSE"
+  },
+  "engine": {
+    "node": ">=0.10"
+  }
 }
