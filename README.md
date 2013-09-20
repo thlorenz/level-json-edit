@@ -1,6 +1,6 @@
 # level-json-edit
 
-Taking editing json to the next level with multilevel and hulk.
+Taking editing json to the next level with multilevel.
 
 ```js
 // TODO
