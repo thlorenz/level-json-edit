@@ -3,6 +3,11 @@
   "version": "0.0.0",
   "description": "Taking editing json to the next level with multilevel.",
   "main": "index.js",
+  "browserify": {
+    "transform": [
+      "brfs"
+    ]
+  },
   "scripts": {
     "test": "echo 'todo: tap test/*.js'"
   },
