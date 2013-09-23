@@ -46,3 +46,25 @@ server.on('listening', function (address) {
   console.log('listening: http://%s:%d', a.address, a.port);  
 });
 server.listen(3000);
+
+// DB
+var multilevel = require('multilevel');
+var level = require('level')
+var db = level(path.join(__dirname, 'store', 'sample.db'), { valueEncoding: 'json' });
+
+// Manifest
+multilevel.writeManifest(db, path.join(__dirname, 'manifest.json'));
+
+// Engine
+var engine = require('engine.io-stream');
+  
+var engine = engine(onconnection);
+
+function onconnection(con) {
+  con.pipe(multilevel.server(db)).pipe(con);  
+}
+
+engine.attach(server, '/engine');
+
+
+

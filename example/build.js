@@ -1,4 +1,5 @@
 'use strict';
+
 var browserify = require('browserify');
 
 var go = module.exports = function () {
