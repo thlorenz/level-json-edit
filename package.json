@@ -3,11 +3,7 @@
   "version": "0.0.0",
   "description": "Taking editing json to the next level with multilevel.",
   "main": "index.js",
-  "browserify": {
-    "transform": [
-      "brfs"
-    ]
-  },
+  "browserify": {},
   "scripts": {
     "test": "echo 'todo: tap test/*.js'"
   },
@@ -18,8 +14,8 @@
   "homepage": "https://github.com/thlorenz/level-json-edit",
   "dependencies": {
     "multilevel": "~5.5.0",
-    "browserify": "~2.32.2",
-    "jsoneditor": "~2.3.0"
+    "jsoneditor": "~2.3.0",
+    "browserify": "~2.32.2"
   },
   "devDependencies": {},
   "keywords": [

@@ -1,5 +1,6 @@
 'use strict';
 
+//var multilevel = require('multilevel');
 var JSONEditor = require('jsoneditor').JSONEditor;
 
 var json = {
@@ -20,4 +21,8 @@ var opts = {
 var container = document.createElement('div');
 document.body.appendChild(container);
 
+/*var db = multilevel.client();
+var con = net.connect(3000);
+*/
 var editor = new JSONEditor(container, opts, json);
+
