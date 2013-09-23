@@ -15,7 +15,7 @@
   "dependencies": {
     "multilevel": "~5.5.0",
     "jsoneditor": "~2.3.0",
-    "browserify": "~2.32.2"
+    "browserify": "git://github.com/thlorenz/node-browserify"
   },
   "devDependencies": {},
   "keywords": [

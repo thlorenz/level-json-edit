@@ -1,6 +1,6 @@
 'use strict';
 
-//var multilevel = require('multilevel');
+var multilevel = require('multilevel');
 var JSONEditor = require('jsoneditor').JSONEditor;
 
 var json = {
