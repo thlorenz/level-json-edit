@@ -48,9 +48,17 @@ server.on('listening', function (address) {
 server.listen(3000);
 
 // DB
-var multilevel = require('multilevel');
-var level = require('level')
-var db = level(path.join(__dirname, 'store', 'sample.db'), { valueEncoding: 'json' });
+var multilevel =  require('multilevel')
+  , level      =  require('level')
+  , sublevel   =  require('level-sublevel')
+  ;
+
+var db = level(path.join(__dirname, 'store', 'sample.db'));
+db = sublevel(db);
+
+var subData = db.sublevel('data-json', { valueEncoding: 'json' })
+  , byLocation = db.sublevel('idx-location')
+  , byVenue = db.sublevel('idx-venue');
 
 // Manifest
 multilevel.writeManifest(db, path.join(__dirname, 'manifest.json'));
@@ -65,6 +73,3 @@ function onconnection(con) {
 }
 
 engine.attach(server, '/engine');
-
-
-
