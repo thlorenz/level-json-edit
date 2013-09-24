@@ -1,0 +1,13 @@
+.indexes-viewer {
+  float: left;
+  width: 440px;
+  height: 100%;
+  margin: 5px;
+}
+
+.data-editor {
+  float: left;
+  width: 940px;
+  margin: 5px;
+  height: 100%;
+}

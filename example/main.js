@@ -22,13 +22,34 @@ var opts = {
   isIndex: isIndex
 }
 
-sublevelIndexes(db.sublevels, opts.isIndex, function (err, res) {
+var indexesViewer = window.iv = renderEditor({ indexes: 'loading ...' }, 'indexes-viewer', 'view');
+var dataEditor = window.de = renderEditor({ click: 'entry from indexes to load data here' }, 'data-editor');
+
+sublevelIndexes(db.sublevels, opts.isIndex, function (err, indexes) {
   if (err) return console.error(err);
-  renderEditor(res, 'view');
+
+  indexesViewer.set(indexes);
+
+  indexesViewer.expandAll();
+  indexesViewer.table.onclick = function (ev) {
+    var tgt = ev.target;
+    if ((/^value/).test(tgt.getAttribute('class'))) {
+      var key = tgt.innerText;
+      data.get(key, function (err, val) {
+        if (err) return console.error(err);
+        dataEditor.set(val);
+        dataEditor.expandAll();
+      });
+    }
+  }
 })
 
-function renderEditor (json, mode) {
+function renderEditor (json, clazz, mode) {
   var JSONEditor = require('jsoneditor').JSONEditor;
+
+  var container = document.createElement('div');
+  document.body.appendChild(container);
+  if (clazz) container.setAttribute('class', clazz);
 
   var opts = {
     mode: mode || 'form',
@@ -37,10 +58,7 @@ function renderEditor (json, mode) {
     }
   };
 
-  var container = document.createElement('div');
-  document.body.appendChild(container);
-
-  var editor = new JSONEditor(container, opts, json);
+  return new JSONEditor(container, opts, json);
 }
 
 window.level = {
