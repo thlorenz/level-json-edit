@@ -6,7 +6,6 @@ var manifest = require('./manifest.json');
 
 var db = multilevel.client(manifest);
 
-
 var con = engine('/engine')
 con.pipe(db.createRpcStream()).pipe(con)
 
@@ -41,8 +40,56 @@ function renderEditor (json) {
 }
 
 window.level = {
-    db         :  db
+    manifest   :  manifest
+  , db         :  db
   , data       :  data
   , byLocation :  byLocation
   , byVenue    :  byVenue
 }
+
+
+
+// sublevels
+var dump = require('level-dump')
+  , asyncReduce = require('asyncreduce')
+  
+
+var sublevels = db.sublevels;
+var indexSublevels = Object.keys(sublevels)
+  .filter(isIndex)
+  .map(function (k) { return sublevels[k] })
+
+// passed by user
+function isIndex (key) {
+  return (/^idx-/).test(key);
+}
+
+function createSearch (acc, sublevel, cb) {
+  var sep = sublevel._sep;
+  var index = acc[sublevel._prefix] = {};
+
+  dump(sublevel, onkeyval, onend);
+
+  function onkeyval (kv) {
+    var idx = kv.key.split(sep)[0]
+      , val = kv.value;
+    if (!index[idx]) index[idx] = [];
+    index[idx].push(val);
+  }
+
+  function onend () {
+    cb(null, acc);
+  }
+}
+
+function onAllSearchesCreated (err, res) {
+  if (err) return console.error(err);
+  console.log(res);
+}
+
+asyncReduce(
+    indexSublevels
+  , {}
+  , createSearch
+  , onAllSearchesCreated
+)

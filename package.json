@@ -19,7 +19,9 @@
     "level": "~0.16.0",
     "level-sublevel": "~5.1.1",
     "level-manifest": "~1.1.1",
-    "jsoneditor": "git://github.com/thlorenz/jsoneditor#patch-1"
+    "jsoneditor": "git://github.com/thlorenz/jsoneditor#patch-1",
+    "level-dump": "~0.4.0",
+    "asyncreduce": "~0.1.4"
   },
   "devDependencies": {},
   "keywords": [
