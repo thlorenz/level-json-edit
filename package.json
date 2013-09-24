@@ -14,12 +14,12 @@
   "homepage": "https://github.com/thlorenz/level-json-edit",
   "dependencies": {
     "multilevel": "~5.5.0",
-    "jsoneditor": "~2.3.0",
     "engine.io-stream": "~0.4.1",
     "browserify": "~2.32.4",
     "level": "~0.16.0",
     "level-sublevel": "~5.1.1",
-    "level-manifest": "~1.1.1"
+    "level-manifest": "~1.1.1",
+    "jsoneditor": "git://github.com/thlorenz/jsoneditor#patch-1"
   },
   "devDependencies": {},
   "keywords": [
