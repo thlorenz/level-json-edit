@@ -10,7 +10,9 @@ lib-cov
 pids
 logs
 results
+store
 
+indexes.json
 manifest.json
 
 npm-debug.log
