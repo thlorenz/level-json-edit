@@ -3,7 +3,7 @@
 var engine = require('engine.io-stream');
 var multilevel = require('multilevel');
 var manifest = require('./manifest.json');
-var sublevelIndexes = require('./sublevel-indexes');
+var sublevelIndexes = require('./sublevel-indexes-mock');
 
 var db = multilevel.client(manifest);
 
