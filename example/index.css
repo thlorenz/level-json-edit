@@ -1,13 +1,19 @@
 .indexes-viewer {
-  float: left;
-  width: 440px;
-  height: 100%;
-  margin: 5px;
+  position: absolute;
+  width: 400px;
+  top: 10px;
+  height: 95%;
 }
 
 .data-editor {
-  float: left;
-  width: 940px;
-  margin: 5px;
-  height: 100%;
+  position: absolute;
+  min-width: 900px;
+  margin-left: 405px;
+  width: 50%;
+  top: 10px;
+  height: 95%;
+}
+
+.indexes-viewer .jsoneditor .value {
+  cursor: pointer;
 }
