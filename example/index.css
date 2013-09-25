@@ -4,19 +4,16 @@
   position: absolute;
 }
 .indexes-viewer {
-  width: 300px;
   float: left;
   height: 95%;
 }
 
 .data-editor {
-  width: 500px;
   float: left;
   height: 95%;
 }
 
 .site-view {
-  width: 600px;
   float: left;
   height: 95%;
 }
@@ -25,3 +22,7 @@
   cursor: pointer;
 }
 
+.resizable {
+  resize: horizontal;
+  overflow: auto;
+}
