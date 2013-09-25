@@ -1,19 +1,27 @@
 .indexes-viewer {
   position: absolute;
-  width: 400px;
+  width: 300px;
   top: 10px;
   height: 95%;
 }
 
 .data-editor {
   position: absolute;
-  min-width: 900px;
-  margin-left: 405px;
-  width: 50%;
+  width: 600px;
+  margin-left: 300px;
   top: 10px;
   height: 95%;
+}
+
+.site-view {
+  position: absolute;
+  width: 600px;
+  margin-left: 900px;
+  height: 95%;
+  top: 10px;
 }
 
 .indexes-viewer .jsoneditor .value {
   cursor: pointer;
 }
+

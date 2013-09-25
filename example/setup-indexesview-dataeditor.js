@@ -7,8 +7,8 @@ var go = module.exports = function (db, opts) {
   
   var data = db.sublevels[opts.dataPrefix];
 
-  var indexesViewer = renderEditor({ indexes: 'loading ...' }, 'indexes-viewer', 'view');
-  var dataEditor = renderEditor({ click: 'entry from indexes to load data here' }, 'data-editor');
+  var indexesViewer = renderEditor({ indexes: 'loading ...' }, opts.indexesContainer, 'view');
+  var dataEditor = renderEditor({ click: 'entry from indexes to load data here' }, opts.editorContainer);
 
   sublevelIndexes(db.sublevels, opts, function (err, indexes) {
     if (err) return console.error(err);

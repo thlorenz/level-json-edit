@@ -16,8 +16,10 @@ function isIndex (key) {
 }
 
 var opts = {
-    isIndex: isIndex
-  , dataPrefix: 'data-json'
+    isIndex          :  isIndex
+  , dataPrefix       :  'data-json'
+  , indexesContainer :  document.getElementsByClassName('indexes-viewer')[0]
+  , editorContainer  :  document.getElementsByClassName('data-editor')[0]
 }
 
 setupViewNeditor(db, opts);
