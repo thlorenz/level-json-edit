@@ -5,19 +5,19 @@
 }
 .indexes-viewer {
   float: left;
-  width: 20%;
+  min-width: 20%;
   height: 95%;
 }
 
 .data-editor {
   float: left;
-  width: 49%;
+  min-width: 49%;
   height: 95%;
 }
 
 .site-view {
   float: left;
-  width: 30%;
+  min-width: 30%;
   height: 95%;
 }
 
