@@ -24,11 +24,11 @@ var asyncReduce =  require('asyncreduce')
  */
 var go = module.exports = function (sublevels, opts, cb) {
 
-  var indexSublevels = Object.keys(sublevels)
+  var sublevelsToIndex = Object.keys(sublevels)
     .filter(opts.isIndex)
     .map(function (k) { return sublevels[k] })
 
-  function createSearch (acc, sublevel, cb) {
+  function indexSublevel (acc, sublevel, cb) {
     var sep = sublevel._sep || '\xff';
     var index = acc[sublevel._prefix] = {};
     var max = opts.maxValuesPerIndex || Infinity;
@@ -39,7 +39,7 @@ var go = module.exports = function (sublevels, opts, cb) {
         , values: false
         , limit: opts.limit || undefined
         , start: '' 
-        , end: sublevel.sep
+        , end: sep 
       })
       .on('data', onkey)
       .on('end', onend)
@@ -59,9 +59,9 @@ var go = module.exports = function (sublevels, opts, cb) {
   }
 
   asyncReduce(
-      indexSublevels
+      sublevelsToIndex
     , {}
-    , createSearch
+    , indexSublevel
     , cb
   )
 };

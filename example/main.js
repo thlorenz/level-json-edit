@@ -1,15 +1,6 @@
 'use strict';
 
-var engine = require('engine.io-stream');
-var multilevel = require('multilevel');
-var manifest = require('./manifest.json');
-var setupViewNeditor = require('./setup-indexesview-dataeditor');
-
-var db = multilevel.client(manifest);
-
-var con = engine('/engine')
-con.pipe(db.createRpcStream()).pipe(con)
-
+var levelEditor = require('../');
 
 function isIndex (key) {
   return (/^idx-/).test(key);
@@ -23,8 +14,8 @@ var opts = {
 }
 
 var siteView = document.getElementsByClassName('site-view')[0];
-var root = 'http://google.com';
-var events = setupViewNeditor(db, opts);
+var root = 'http://www.concierge.com/travelguide';
+var events = levelEditor(opts);
 events.on('entry-loaded', onentryloaded);
 
 function onentryloaded (entry) {

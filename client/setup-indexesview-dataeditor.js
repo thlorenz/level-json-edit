@@ -1,16 +1,20 @@
 'use strict';
 
-var renderEditor = require('./render-jsoneditor');
-var sublevelIndexes = require('./sublevel-indexes-mock');
-var EE = require('events').EventEmitter;
+var renderEditor = require('./render-jsoneditor')
+  , sublevelIndexes = require('./sublevel-indexes');
 
-var go = module.exports = function (db, opts) {
-  var events = new EE();
-  
+var go = module.exports = function (db, events, opts) {
   var data = db.sublevels[opts.dataPrefix];
 
-  var indexesViewer = renderEditor({ indexes: 'loading ...' }, opts.indexesContainer, 'view');
-  var dataEditor = renderEditor({ click: 'entry from indexes to load data here' }, opts.editorContainer);
+  var indexesViewer = renderEditor(
+      { indexes: 'loading ...' }
+    , opts.indexesContainer
+    , 'view'
+  )
+  var dataEditor = renderEditor(
+      { click: 'entry from indexes to load data here' }
+    , opts.editorContainer
+  );
 
   sublevelIndexes(db.sublevels, opts, function (err, indexes) {
     if (err) return console.error(err);
@@ -30,6 +34,4 @@ var go = module.exports = function (db, opts) {
       }
     }
   })
-
-  return events;
 }

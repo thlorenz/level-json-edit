@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "description": "Taking editing json to the next level with multilevel.",
   "main": "index.js",
-  "browserify": {},
+  "browser": "./client/level-json-edit",
   "scripts": {
     "test": "echo 'todo: tap test/*.js'"
   },

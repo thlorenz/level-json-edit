@@ -61,7 +61,7 @@ var subData = db.sublevel('data-json', { valueEncoding: 'json' })
   , byVenue = db.sublevel('idx-venue');
 
 // Manifest
-multilevel.writeManifest(db, path.join(__dirname, 'manifest.json'));
+multilevel.writeManifest(db, path.join(__dirname, '..', 'manifest.json'));
 
 // Engine
 var engine = require('engine.io-stream');
