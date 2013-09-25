@@ -3,17 +3,17 @@
 var renderEditor = require('./render-jsoneditor')
   , sublevelIndexes = require('./sublevel-indexes');
 
-var go = module.exports = function (db, events, opts) {
+var go = module.exports = function (db, events, opts, containers) {
   var data = db.sublevels[opts.dataPrefix];
 
   var indexesViewer = renderEditor(
       { indexes: 'loading ...' }
-    , opts.indexesContainer
+    , containers.indexes
     , 'view'
   )
   var dataEditor = renderEditor(
       { click: 'entry from indexes to load data here' }
-    , opts.editorContainer
+    , containers.editor
   );
 
   sublevelIndexes(db.sublevels, opts, function (err, indexes) {

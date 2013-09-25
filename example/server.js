@@ -1,9 +1,11 @@
 'use strict';
 
-var http = require('http')
-  , fs = require('fs')
-  , path = require('path')
-  , build = require('./build')
+var http        =  require('http')
+  , fs          =  require('fs')
+  , path        =  require('path')
+  , build       =  require('./build')
+  , levelEditor =  require('../')
+  , config      =  require('./config')
 
 function serveError (res, err) {
   console.error(err);
@@ -39,37 +41,17 @@ var server = http.createServer(function (req, res) {
   if (req.url === '/jsoneditor.css') return serveCss(res, 'jsoneditor');
 
   serve404(res);
-});
+})
+
 
 server.on('listening', function (address) {
   var a = server.address();
   console.log('listening: http://%s:%d', a.address, a.port);  
-});
+
+  levelEditor(server, config, function (err, subs) {
+    if (err) return console.error(err);
+    console.log('Initialized multilevel with %s as registered index sublevels.', subs);  
+    console.log('Please activate your client now.');
+  })
+})
 server.listen(3000);
-
-// DB
-var multilevel =  require('multilevel')
-  , level      =  require('level')
-  , sublevel   =  require('level-sublevel')
-  ;
-
-var db = level(path.join(__dirname, 'store', 'sample.db'));
-db = sublevel(db);
-
-var subData = db.sublevel('data-json', { valueEncoding: 'json' })
-  , byLocation = db.sublevel('idx-location')
-  , byVenue = db.sublevel('idx-venue');
-
-// Manifest
-multilevel.writeManifest(db, path.join(__dirname, '..', 'manifest.json'));
-
-// Engine
-var engine = require('engine.io-stream');
-  
-var engine = engine(onconnection);
-
-function onconnection(con) {
-  con.pipe(multilevel.server(db)).pipe(con);  
-}
-
-engine.attach(server, '/engine');
