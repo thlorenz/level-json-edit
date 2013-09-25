@@ -22,7 +22,14 @@ var opts = {
   , editorContainer  :  document.getElementsByClassName('data-editor')[0]
 }
 
-setupViewNeditor(db, opts);
+var siteView = document.getElementsByClassName('site-view')[0];
+var root = 'http://google.com';
+var events = setupViewNeditor(db, opts);
+events.on('entry-loaded', onentryloaded);
+
+function onentryloaded (entry) {
+  siteView.src = root + entry.key;
+}
 
 window.level = {
     manifest   :  manifest

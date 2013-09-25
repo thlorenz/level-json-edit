@@ -1,9 +1,11 @@
 'use strict';
 
 var renderEditor = require('./render-jsoneditor');
-var sublevelIndexes = require('./sublevel-indexes');
+var sublevelIndexes = require('./sublevel-indexes-mock');
+var EE = require('events').EventEmitter;
 
 var go = module.exports = function (db, opts) {
+  var events = new EE();
   
   var data = db.sublevels[opts.dataPrefix];
 
@@ -23,8 +25,11 @@ var go = module.exports = function (db, opts) {
           if (err) return console.error(err);
           dataEditor.set(val);
           dataEditor.expandAll();
+          events.emit('entry-loaded', { key: key, value: val });
         });
       }
     }
   })
+
+  return events;
 }
