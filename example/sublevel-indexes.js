@@ -1,7 +1,6 @@
 'use strict';
 
-var dump = require('level-dump')
-  , asyncReduce = require('asyncreduce')
+var asyncReduce =  require('asyncreduce')
 
 /**
  * Reads all index sublevel entries and indexes them by sublevel-prefix.index-value
