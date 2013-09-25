@@ -15,15 +15,10 @@ var opts = {
 
 var siteView = document.getElementsByClassName('site-view')[0];
 var root = 'http://www.concierge.com/travelguide';
-var events = levelEditor(opts);
-events.on('entry-loaded', onentryloaded);
+levelEditor(opts)
+  .on('entry-loaded', onentryloaded)
+  .on('error', console.error.bind(console));
 
 function onentryloaded (entry) {
   siteView.src = root + entry.key;
 }
-
-window.level = {
-    manifest   :  manifest
-  , db         :  db
-}
-

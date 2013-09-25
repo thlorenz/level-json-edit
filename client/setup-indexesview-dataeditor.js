@@ -17,7 +17,7 @@ var go = module.exports = function (db, events, opts) {
   );
 
   sublevelIndexes(db.sublevels, opts, function (err, indexes) {
-    if (err) return console.error(err);
+    if (err) return events.emit('error', err);
 
     indexesViewer.set(indexes);
 
