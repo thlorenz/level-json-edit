@@ -50,8 +50,8 @@ server.on('listening', function (address) {
 
   levelEditor(server, config, function (err, subs) {
     if (err) return console.error(err);
+    console.log('Client connected and requested level-manifest');
     console.log('Initialized multilevel with %s as registered index sublevels.', subs);  
-    console.log('Please activate your client now.');
   })
 })
 server.listen(3000);
