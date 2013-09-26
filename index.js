@@ -68,7 +68,7 @@ var go = module.exports = function (server, config) {
 
     function reportError(err) {
       res.writeHead(200, { 'Content-Type': 'text/plain' });
-      res.end(err);
+      res.end(JSON.stringify(err));
       events.emit('error', err);
     }
 
@@ -78,7 +78,10 @@ var go = module.exports = function (server, config) {
       try {
         json = JSON.stringify(opts.manifest);
 
-        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.writeHead(200, { 
+            'Content-Type': 'application/json' 
+          , 'Content-Length': json.length
+        });
         res.end(json);
         connectDB(opts.db);
         inited = { db: opts.db, manifest: opts.manifest };

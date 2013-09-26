@@ -5,7 +5,7 @@
   "main": "index.js",
   "browser": "./client/level-json-edit",
   "scripts": {
-    "test": "echo 'todo: tap test/*.js'"
+    "test": "tap test/*.js"
   },
   "repository": {
     "type": "git",
@@ -25,7 +25,9 @@
     "xhr": "~1.2.3"
   },
   "devDependencies": {
-    "npmlog": "0.0.4"
+    "npmlog": "0.0.4",
+    "dev-null": "~0.1.1",
+    "tap": "~0.4.4"
   },
   "keywords": [
     "edit",
