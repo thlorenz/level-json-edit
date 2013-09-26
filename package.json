@@ -24,7 +24,9 @@
     "level-subtree": "~1.1.0",
     "xhr": "~1.2.3"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "npmlog": "0.0.4"
+  },
   "keywords": [
     "edit",
     "json",

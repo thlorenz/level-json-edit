@@ -7,26 +7,23 @@ var multilevel    =  require('multilevel')
   , subtree       =  require('level-subtree')
   , engineIO      =  require('engine.io-stream')
   , path          =  require('path')
-
-function inspect(obj, depth) {
-  console.error(require('util').inspect(obj, false, depth || 5, true));
-}
+  , EE            =  require('events').EventEmitter
 
 /**
- * 
+ *
  * @name exports
  * @function
- * @param server 
+ * @param server
  * @param config {Object} with the following properties:
  *  - dbPath {String} path to level db
- * @param cb {Function} called when multilevel was initialized and socket connected
  */
-var go = module.exports = function (server, config, cb) {
+var go = module.exports = function (server, config) {
   var registeredIndexSubs = []
     , inited = null
+    , events = new EE();
 
-  function initdb (cb_) {
-    if (inited) return cb_(null, inited);
+  function initdb (cb) {
+    if (inited) return cb(null, inited);
 
     level(config.dbPath, ondb);
 
@@ -41,15 +38,16 @@ var go = module.exports = function (server, config, cb) {
         // sublevel all index subs and the data sub in order to have them included in the manifest and thus be available for the client
         var indexes = Object.keys(tree)
           .filter(config.isIndex)
-          .forEach(function (pref) { 
+          .forEach(function (pref) {
             db.sublevel(pref)
             registeredIndexSubs.push(pref);
           })
-        
+
         db.sublevel(config.dataPrefix, { valueEncoding: 'json' });
-        
+
         var manifest = levelManifest(db);
-        cb_(null, { db: db, manifest: manifest })
+        events.emit('inited-db', config.dbPath);
+        cb(null, { db: db, manifest: manifest })
       })
     }
   }
@@ -57,19 +55,19 @@ var go = module.exports = function (server, config, cb) {
   function connectDB (db) {
     var engine = engineIO(onconnection);
     function onconnection(con) {
-      con.pipe(multilevel.server(db)).pipe(con);  
+      con.pipe(multilevel.server(db)).pipe(con);
     }
 
     engine.attach(server, '/engine');
   }
 
-  function initdbNserveManifest (res, cb_) {
+  function initdbNserveManifest (res) {
     initdb(oniniteddb);
 
     function reportError(err) {
       res.writeHead(200, { 'Content-Type': 'text/plain' });
       res.end(err);
-      cb(err);
+      events.emit('error', err);
     }
 
     function oniniteddb (err, opts) {
@@ -82,7 +80,7 @@ var go = module.exports = function (server, config, cb) {
         res.end(json);
         connectDB(opts.db);
         inited = { db: opts.db, manifest: opts.manifest };
-        cb();
+        events.emit('sent-manifest', opts.manifest);
       } catch (e) {
         reportError(e);
       }
@@ -95,7 +93,7 @@ var go = module.exports = function (server, config, cb) {
   server.removeAllListeners('request');
 
   server.on('request', function(req, res){
-    if (req.url === '/level-manifest') return initdbNserveManifest(res, cb);
+    if (req.url === '/level-manifest') return initdbNserveManifest(res);
     for (var i = 0, l = listeners.length; i < l; i++) {
       listeners[i].call(server, req, res);
     }
@@ -103,15 +101,17 @@ var go = module.exports = function (server, config, cb) {
   server.on('close', function () {
     if (inited && inited.db) {
       inited.db.close(function (err) {
-        console.log('closed db %s with %s', config.dbPath, err);
+        events.emit('closed-db', config.dbPath, err);
       });
     }
   })
+
+  return events;
 }
 
 // Test
 if (!module.parent) {
-  var dbPath = path.join(__dirname, 'example', 'store');  
+  var dbPath = path.join(__dirname, 'example', 'store');
   go(null, require('./example/config'), function (err, res) {
     if (err) return console.error(err);
     console.log(res);

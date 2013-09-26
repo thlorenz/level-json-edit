@@ -5,6 +5,7 @@ var http        =  require('http')
   , path        =  require('path')
   , build       =  require('./build')
   , levelEditor =  require('../')
+  , log         =  require('npmlog')
   , config      =  require('./config')
 
 function serveError (res, err) {
@@ -34,7 +35,7 @@ function serve404 (res) {
 }
 
 var server = http.createServer(function (req, res) {
-  console.log('%s %s', req.method, req.url);
+  log.info('server', '%s %s', req.method, req.url);
   if (req.url === '/') return serveIndex(res);
   if (req.url === '/bundle.js') return serveBundle(res);
   if (req.url === '/index.css') return serveCss(res, 'index');
@@ -43,15 +44,35 @@ var server = http.createServer(function (req, res) {
   serve404(res);
 })
 
+function inspect(obj, depth) {
+  return require('util').inspect(obj, false, depth || 5, true);
+}
 
 server.on('listening', function (address) {
   var a = server.address();
-  console.log('listening: http://%s:%d', a.address, a.port);  
+  log.info('server', 'listening: http://%s:%d', a.address, a.port);  
 
-  levelEditor(server, config, function (err, subs) {
-    if (err) return console.error(err);
-    console.log('Client connected and requested level-manifest');
-    console.log('Initialized multilevel with %s as registered index sublevels.', subs);  
-  })
+  levelEditor(server, config)
+    .on('error', onerror)
+    .on('sent-manifest', onsentManifest)
+    .on('inited-db', oninitedDB)
+    .on('closed-db', onclosedDB)
+
+  function onerror (err) {
+    log.error('server', err);
+  }
+
+  function onsentManifest (manifest) {
+    log.info('server', 'sent manifest');
+    log.verbose('server', inspect(manifest));
+  }
+
+  function oninitedDB (dbPath) {
+    log.info('server', 'initialized db', dbPath);
+  }
+
+  function onclosedDB (dbPath, err) {
+    log.info('server', 'closed db', dbPath, err);
+  }
 })
 server.listen(3000);

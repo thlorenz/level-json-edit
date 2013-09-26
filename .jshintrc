@@ -8,5 +8,4 @@
   , "strict"    :  false
   , "validthis" :  true
   , "asi"       :  true
-  , "browser"   :  true
 }

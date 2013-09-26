@@ -1,5 +1,7 @@
 'use strict';
 
+/*jshint browser: true */
+
 var levelEditor =  require('../')
   , config      =  require('./config')
 
