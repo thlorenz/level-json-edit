@@ -16,6 +16,8 @@ var multilevel    =  require('multilevel')
  * @param server
  * @param config {Object} with the following properties:
  *  - dbPath {String} path to level db
+ *  - isIndex {Function} should return true if prefix is for a sublevel that is an index, otherwise false
+ *  - dataPrefix {String} the prefix of the sublevel that contains the json data
  */
 var go = module.exports = function (server, config) {
   var registeredIndexSubs = []
