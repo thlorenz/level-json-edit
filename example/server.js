@@ -86,5 +86,5 @@ server.on('listening', function (address) {
   }
 })
 
-// log.level = 'verbose';
+log.level = 'verbose';
 server.listen(3000);

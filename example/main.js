@@ -16,6 +16,7 @@ var containers = {
 levelEditor(config, containers)
   .on('entry-loaded', onentryLoaded)
   .on('entry-saving', onentrySaving)
+  .on('save-invalid', onsaveInvalid)
   .on('entry-saved', onentrySaved)
   .on('error', console.error.bind(console));
 
@@ -25,6 +26,10 @@ function onentryLoaded (entry) {
 
 function onentrySaving (entry) {
   console.log('saving', entry)
+}
+
+function onsaveInvalid (entry, previous) {
+  console.error('invalid save', { current: entry, previous: previous });
 }
 
 function onentrySaved (entry) {
