@@ -19,12 +19,15 @@ var go = module.exports = function (db, events, opts, containers) {
   sublevelIndexes(db.sublevels, opts, function (err, indexes) {
     if (err) return events.emit('error', err);
 
+    var key;
+
     indexesViewer.set(indexes);
 
     indexesViewer.table.onclick = function (ev) {
       var tgt = ev.target;
       if ((/^value/).test(tgt.getAttribute('class'))) {
-        var key = tgt.innerText;
+        key = tgt.innerText;
+
         data.get(key, function (err, val) {
           if (err) return console.error(err);
           dataEditor.set(val);
@@ -33,5 +36,19 @@ var go = module.exports = function (db, events, opts, containers) {
         });
       }
     }
+
+    if (containers.saveButton) {
+      // TODO: disable while undo is not possible?
+      containers.saveButton.onclick = function (ev) {
+        var entry = { key: key, value: dataEditor.get() };
+        events.emit('entry-saving', entry);
+        data.put(entry.key, entry.value, function (err) {
+          console.log('saved', err);
+          if (err) events.emit('error');  
+          events.emit('entry-saved', entry);
+        });
+      }
+    }
+
   })
 }

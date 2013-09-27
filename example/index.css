@@ -2,6 +2,7 @@
   width: 100%;
   height: 100%;
   position: absolute;
+  top: 40px;
 }
 .indexes-viewer {
   float: left;
@@ -28,4 +29,10 @@
 .resizable {
   resize: horizontal;
   overflow: auto;
+}
+
+.save-button {
+  font-size: 24px;
+  float: right;
+  cursor: pointer;
 }

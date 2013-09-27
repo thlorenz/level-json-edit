@@ -9,6 +9,9 @@ var multilevel    =  require('multilevel')
   , path          =  require('path')
   , EE            =  require('events').EventEmitter
 
+// TODO: authorize read vs. write
+//       intercept puts to determine correctness ?
+  
 /**
  *
  * @name exports
@@ -48,7 +51,7 @@ var go = module.exports = function (server, config) {
         db.sublevel(config.dataPrefix, { valueEncoding: 'json' });
 
         var manifest = levelManifest(db);
-        events.emit('inited-db', config.dbPath);
+        events.emit('inited-db', config.dbPath, db);
         cb(null, { db: db, manifest: manifest })
       })
     }

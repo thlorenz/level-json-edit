@@ -28,6 +28,7 @@ var go = module.exports = function (opts, containers) {
     var con = engine('/engine')
     con.pipe(db.createRpcStream()).pipe(con)
 
+    window.db = db;
     setupViewNeditor(db, events, opts, containers);
   }
 

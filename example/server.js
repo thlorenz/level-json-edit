@@ -48,6 +48,13 @@ function inspect(obj, depth) {
   return require('util').inspect(obj, false, depth || 5, true);
 }
 
+function logOperation (type, arg1, arg2) {
+  log.verbose('server'
+    , type, arg1 && inspect(arg1)
+    , arg2 && typeof arg2 !== 'function' && inspect(arg2)
+  ) 
+}
+
 server.on('listening', function (address) {
   var a = server.address();
   log.info('server', 'listening: http://%s:%d', a.address, a.port);  
@@ -67,12 +74,17 @@ server.on('listening', function (address) {
     log.verbose('server', inspect(manifest));
   }
 
-  function oninitedDB (dbPath) {
+  function oninitedDB (dbPath, db) {
     log.info('server', 'initialized db', dbPath);
+    db.on('put', logOperation.bind(null, 'put'))
+      .on('del', logOperation.bind(null, 'del'))
+      .on('batch', logOperation.bind(null, 'batch'))
   }
 
   function onclosedDB (dbPath, err) {
     log.info('server', 'closed db', dbPath, err);
   }
 })
+
+// log.level = 'verbose';
 server.listen(3000);
