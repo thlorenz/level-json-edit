@@ -1,7 +1,7 @@
 'use strict';
 /*jshint asi: true */
 
-var test = require('tap').test
+var test = require('tape')
 var sut = require('../index')
 var level = require('level')
   , sublevel = require('level-sublevel')
@@ -40,7 +40,7 @@ function initNcloseDB (dbPath, cb) {
   }
 }
 
-test('\ngiven I have a level db with two indexes and a data sublevel the server sends correct manifest and streams correct data', function (t) {
+test('given I have a level db with two indexes and a data sublevel the server sends correct manifest and streams correct data', function (t) {
   t.plan(6)
   var server = http.createServer()
 
@@ -75,7 +75,7 @@ test('\ngiven I have a level db with two indexes and a data sublevel the server 
         .once('response', function (res) {
           t.equal(res.statusCode, 200, '200 response');
           t.ok(res.headers['content-length'] > 0, 'with content');
-          t.similar(res.headers['content-type'], /^application\/json/, 'application/json');
+          t.ok((/^application\/json/).test(res.headers['content-type']), 'application/json')
 
           var json = ''
           res
