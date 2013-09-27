@@ -5,6 +5,7 @@ var engine           =  require('engine.io-stream')
  ,  multilevel       =  require('multilevel')
  ,  EE               =  require('events').EventEmitter
  ,  setupViewNeditor =  require('./setup-indexesview-dataeditor')
+  , renderEditor = require('./render-jsoneditor')
 
 function getManifest (cb) {
   xhr({ 
@@ -19,6 +20,18 @@ function getManifest (cb) {
 
 var go = module.exports = function (opts, containers) {
   var events = new EE();
+
+  var indexesViewer = renderEditor(
+      { indexes: 'loading ...' }
+    , containers.indexes
+    , 'view'
+  )
+  var dataEditor = renderEditor(
+      { click: 'entry from indexes to load data here' }
+    , containers.editor
+  );
+  var editors = { indexes: indexesViewer, editor: dataEditor };
+
   getManifest(onmanifest)
 
   function onmanifest (err, manifest) {
@@ -28,10 +41,9 @@ var go = module.exports = function (opts, containers) {
     var con = engine('/engine')
     con.pipe(db.createRpcStream()).pipe(con)
 
-    window.db = db;
-    setupViewNeditor(db, events, opts, containers);
+    setupViewNeditor(db, events, opts, editors, containers);
   }
 
-  return events;
+  return { on: events.on.bind(events), indexes: indexesViewer, editor: dataEditor };
 };
 

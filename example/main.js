@@ -13,14 +13,15 @@ var containers = {
   , saveButton  :  document.getElementsByClassName('save-button')[0]
 };
 
-levelEditor(config, containers)
-  .on('entry-loaded', onentryLoaded)
+var le = levelEditor(config, containers)
+le.on('entry-loaded', onentryLoaded)
   .on('entry-saving', onentrySaving)
   .on('save-invalid', onsaveInvalid)
   .on('entry-saved', onentrySaved)
   .on('error', console.error.bind(console));
 
 function onentryLoaded (entry) {
+  le.editor.expandAll();
   siteView.src = root + entry.key;
 }
 
