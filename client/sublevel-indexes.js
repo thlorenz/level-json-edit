@@ -29,7 +29,8 @@ var go = module.exports = function (sublevels, opts, cb) {
     .map(function (k) { return sublevels[k] })
 
   function indexSublevel (acc, sublevel, cb) {
-    var sep = sublevel._sep || '\xff';
+    // sublevel._options.sep -- server side -- mostly for testing
+    var sep = sublevel._sep || (sublevel._options && sublevel._options.sep) || '\xff';
     var index = acc[sublevel._prefix] = {};
     var max = opts.maxValuesPerIndex || Infinity;
 
@@ -39,7 +40,8 @@ var go = module.exports = function (sublevels, opts, cb) {
         , values: false
         , limit: opts.limit || undefined
         , start: '' 
-        , end: sep 
+        // reading to sep is not working here \xff makes sure we read the entire sublevel no matter what sep is
+        , end: '\xff'
       })
       .on('data', onkey)
       .on('end', onend)

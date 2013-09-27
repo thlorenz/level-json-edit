@@ -28,7 +28,8 @@
     "npmlog": "0.0.4",
     "dev-null": "~0.1.1",
     "tap": "~0.4.4",
-    "tape": "~1.1.1"
+    "tape": "~1.1.1",
+    "level-test": "~1.5.1"
   },
   "keywords": [
     "edit",
