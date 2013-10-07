@@ -43,9 +43,8 @@ function login (req, res) {
 
   function antinuke() {
     body = '';
-    res
-      .writeHead(413, { 'Content-Type': 'text/plain' })
-      .end()
+    res.writeHead(413, { 'Content-Type': 'text/plain' })
+    res.end()
 
     req.connection.destroy();
   }
@@ -59,7 +58,10 @@ function login (req, res) {
     var creds = qs.parse(body);
 
     log.info('server', 'creds', creds);
-    serveIndex(res);
+
+    // redirect to index page
+    res.writeHead(302, { 'Content-Length': 0, 'Location': '/' })
+    res.end()
   }
 
 }
