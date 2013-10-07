@@ -31,6 +31,10 @@
   overflow: auto;
 }
 
+#credentials {
+  float: left;
+}
+
 .save-button {
   font-size: 24px;
   float: right;

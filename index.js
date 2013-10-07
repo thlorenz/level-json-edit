@@ -19,10 +19,14 @@ var multilevel    =  require('multilevel')
  * @param server
  * @param config {Object} with the following properties:
  *  - dbPath {String} path to level db
+ *  - endpoint {String} ('/engine') any common string that server and client use to connect multilevel
  *  - isIndex {Function} should return true if prefix is for a sublevel that is an index, otherwise false
  *  - dataPrefix {String} the prefix of the sublevel that contains the json data
+ *  @param authentication {Object} passed to multilevel server creation (https://github.com/juliangruber/multilevel#authentication)
+ *  - auth: {Function} to authenticate user
+ *  - access: {Function} called when db is accessed with particular method, throw Error if user is not authorized
  */
-var go = module.exports = function (server, config) {
+var go = module.exports = function (server, config, authentication) { 
   var registeredIndexSubs = []
     , inited = null
     , events = new EE();
@@ -60,10 +64,10 @@ var go = module.exports = function (server, config) {
   function connectDB (db) {
     var engine = engineIO(onconnection);
     function onconnection(con) {
-      con.pipe(multilevel.server(db)).pipe(con);
+      con.pipe(multilevel.server(db, authentication)).pipe(con);
     }
 
-    engine.attach(server, '/engine');
+    engine.attach(server, config.endpoint || '/engine');
   }
 
   function initdbNserveManifest (res) {
@@ -86,8 +90,10 @@ var go = module.exports = function (server, config) {
           , 'Content-Length': json.length
         });
         res.end(json);
+
         connectDB(opts.db);
         inited = { db: opts.db, manifest: opts.manifest };
+
         events.emit('sent-manifest', opts.manifest);
       } catch (e) {
         reportError(e);
@@ -95,7 +101,7 @@ var go = module.exports = function (server, config) {
     }
   }
 
-  // Add '/level-manifest' route and prevent previously added handlers from throwing a 404
+  // Add '/level-manifest' route and prevent previously added handlers from returning a 404
   // see: https://github.com/LearnBoost/engine.io/blob/a2fff6fcabdfadb6177b99c456917635b3494432/lib/engine.io.js#L111-L125
   var listeners = server.listeners('request').slice(0);
   server.removeAllListeners('request');
@@ -106,6 +112,7 @@ var go = module.exports = function (server, config) {
       listeners[i].call(server, req, res);
     }
   })
+
   server.on('close', function () {
     if (inited && inited.db) {
       inited.db.close(function (err) {

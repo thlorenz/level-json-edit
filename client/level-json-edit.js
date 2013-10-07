@@ -38,8 +38,10 @@ var go = module.exports = function (opts, containers) {
     if (err) return console.error(err);
 
     var db = multilevel.client(manifest);
-    var con = engine('/engine')
+    var con = engine(opts.endpoint || '/engine')
     con.pipe(db.createRpcStream()).pipe(con)
+
+    events.emit('db-inited', db, manifest)
 
     setupViewNeditor(db, events, opts, editors, containers);
   }

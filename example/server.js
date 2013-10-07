@@ -1,12 +1,14 @@
 'use strict';
 
-var http        =  require('http')
-  , fs          =  require('fs')
-  , path        =  require('path')
-  , build       =  require('./build')
-  , levelEditor =  require('../')
-  , log         =  require('npmlog')
-  , config      =  require('./config')
+var http           =  require('http')
+  , fs             =  require('fs')
+  , path           =  require('path')
+  , qs             =  require('qs')
+  , build          =  require('./build')
+  , levelEditor    =  require('../')
+  , log            =  require('npmlog')
+  , config         =  require('./config')
+  , authentication =  require('./authentication')
 
 function serveError (res, err) {
   console.error(err);
@@ -29,6 +31,39 @@ function serveCss (res, name) {
   fs.createReadStream(path.join(__dirname, name + '.css')).pipe(res); 
 }
 
+function login (req, res) {
+  var body = '';
+  console.log(req.headers);
+  if ( req.method !== 'POST' 
+    || req.headers['content-type'] !== 'application/x-www-form-urlencoded') return;
+
+  req
+    .on('data', ondata)
+    .on('end', onend)
+
+  function antinuke() {
+    body = '';
+    res
+      .writeHead(413, { 'Content-Type': 'text/plain' })
+      .end()
+
+    req.connection.destroy();
+  }
+
+  function ondata (d) { 
+    if (body.length > 1e6) return antinuke();
+    body += d 
+  }
+
+  function onend () {
+    var creds = qs.parse(body);
+
+    log.info('server', 'creds', creds);
+    serveIndex(res);
+  }
+
+}
+
 function serve404 (res) {
   res.writeHead(404);
   res.end();
@@ -40,6 +75,7 @@ var server = http.createServer(function (req, res) {
   if (req.url === '/bundle.js') return serveBundle(res);
   if (req.url === '/index.css') return serveCss(res, 'index');
   if (req.url === '/jsoneditor.css') return serveCss(res, 'jsoneditor');
+  if (req.url === '/login') return login(req, res);
 
   serve404(res);
 })
@@ -59,7 +95,7 @@ server.on('listening', function (address) {
   var a = server.address();
   log.info('server', 'listening: http://%s:%d', a.address, a.port);  
 
-  levelEditor(server, config)
+  levelEditor(server, config, authentication)
     .on('error', onerror)
     .on('sent-manifest', onsentManifest)
     .on('inited-db', oninitedDB)
@@ -86,5 +122,5 @@ server.on('listening', function (address) {
   }
 })
 
-log.level = 'verbose';
+//log.level = 'verbose';
 server.listen(3000);

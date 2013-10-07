@@ -1,6 +1,5 @@
 'use strict';
-
-var path = require('path');
+var path      =  require('path')
 
 function isIndex (key) {
   return (/^idx-/).test(key);

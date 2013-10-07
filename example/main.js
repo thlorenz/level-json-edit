@@ -8,17 +8,25 @@ var levelEditor =  require('../')
 var siteView = document.getElementsByClassName('site-view')[0];
 var root = 'http://www.concierge.com/travelguide';
 var containers = { 
-    indexes :  document.getElementsByClassName('indexes-viewer')[0]
-  , editor  :  document.getElementsByClassName('data-editor')[0]
-  , saveButton  :  document.getElementsByClassName('save-button')[0]
+    indexes    :  document.getElementsByClassName('indexes-viewer')[0]
+  , editor     :  document.getElementsByClassName('data-editor')[0]
+  , saveButton :  document.getElementsByClassName('save-button')[0]
 };
 
 var le = levelEditor(config, containers)
-le.on('entry-loaded', onentryLoaded)
+le.on('db-inited', ondbInited)
+  .on('entry-loaded', onentryLoaded)
   .on('entry-saving', onentrySaving)
   .on('save-invalid', onsaveInvalid)
   .on('entry-saved', onentrySaved)
   .on('error', console.error.bind(console));
+
+function ondbInited (db, manifest) {
+  db.auth({ name: 'hallo', pass: 'welt' }, function (err, data) {
+    if (err) return console.error(err);
+    console.log('data', data);  
+  })
+}
 
 function onentryLoaded (entry) {
   le.editor.expandAll();
