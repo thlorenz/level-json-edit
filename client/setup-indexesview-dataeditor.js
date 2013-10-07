@@ -39,7 +39,7 @@ var go = module.exports = function (db, events, opts, editors, containers) {
         if (!validate(entry, loaded)) return events.emit('save-invalid', entry, loaded);
 
         data.put(entry.key, entry.value, function (err) {
-          if (err) events.emit('error');  
+          if (err) return events.emit('error', err);  
           events.emit('entry-saved', entry);
         });
       }

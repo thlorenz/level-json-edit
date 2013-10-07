@@ -1,7 +1,14 @@
 'use strict';
 var log       =  require('npmlog')
+  , util      =  require('util')
   , admin     =  process.env.LJEDIT_USER
   , adminPass =  process.env.LJEDIT_PASS 
+
+util.inherits(Error, UnauthorizedWriteError);
+function UnauthorizedWriteError(msg) {
+  this.name = 'UnauthorizedWriteError';
+  this.message = msg;
+}
 
 exports.auth = function (user, cb) {
   var isAuthorized = user.name === admin && user.pass === adminPass;
@@ -20,6 +27,6 @@ exports.access = function (user, db, method, args) {
 
   if (isWrite && !userHasWriteAccess) {
     log.info('access', 'Illegal access attempt');
-    throw new Error('read-only access');
+    throw new UnauthorizedWriteError(method + ' is not allowed for user ' + user);
   }
 }

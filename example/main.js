@@ -30,7 +30,7 @@ le.on('db-inited', ondbInited)
   .on('entry-saving', onentrySaving)
   .on('save-invalid', onsaveInvalid)
   .on('entry-saved', onentrySaved)
-  .on('error', console.error.bind(console));
+  .on('error', onerror);
 
 function ondbInited (db, manifest) {
   loginForm.onsubmit = function (ev) {
@@ -56,7 +56,7 @@ function onentryLoaded (entry) {
 }
 
 function onentrySaving (entry) {
-  console.log('saving', entry)
+  //console.log('saving', entry)
 }
 
 function onsaveInvalid (entry, previous) {
@@ -64,5 +64,13 @@ function onsaveInvalid (entry, previous) {
 }
 
 function onentrySaved (entry) {
+  // TODO: success feedback
   console.log('saved', entry)
+}
+
+function onerror (err) {
+  if (err.name === 'UnauthorizedWriteError') {
+    return window.alert(err.message);
+  }
+  console.error(err);
 }
