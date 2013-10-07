@@ -31,6 +31,10 @@
   overflow: auto;
 }
 
+input[disabled=true] {
+  color: gray;
+}
+
 #credentials {
   float: left;
 }

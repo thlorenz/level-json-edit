@@ -10,7 +10,7 @@ exports.auth = function (user, cb) {
     log.info('auth', 'Illegal login attempt for user ', user.name);
     return cb(new Error('User ' + user.name + ' is not authorized!'));
   }
-  log.info('auth', 'Successful login for', user.name);
+  log.info('auth', 'Successful login for user', user.name);
   cb(null, { name: user.name });
 }
 

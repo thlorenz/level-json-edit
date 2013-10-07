@@ -13,9 +13,16 @@ var containers = {
   , saveButton :  document.getElementsByClassName('save-button')[0]
 };
 
-var loginForm = window.creds = document.getElementById('credentials')
+var loginForm = document.getElementById('credentials')
   , loginName = loginForm.getElementsByClassName('user-name')[0]
   , loginPass = loginForm.getElementsByClassName('user-pass')[0]
+  , loginSubmit = loginForm.getElementsByClassName('user-submit')[0]
+
+function showLoggedIn () {
+  loginName.setAttribute('disabled', true) 
+  loginPass.setAttribute('disabled', true) 
+  loginSubmit.setAttribute('disabled', true) 
+}
 
 var le = levelEditor(config, containers)
 le.on('db-inited', ondbInited)
@@ -32,8 +39,12 @@ function ondbInited (db, manifest) {
       , pass = loginPass.value
 
     db.auth({ name: name, pass: pass }, function (err, data) {
-      if (err) return console.error(err);
-      console.log('data', data);  
+      if (err) { 
+        // not nice, but simple
+        return window.alert('Login was unsuccessful, please try again.')
+      }
+
+      showLoggedIn();
     })
   }
 

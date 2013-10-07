@@ -6,7 +6,6 @@ function isIndex (key) {
 }
 
 function validate(entry, previous) {
-  console.log('validating', entry, previous);
   return true;
 }
 
