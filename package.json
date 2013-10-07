@@ -29,9 +29,7 @@
     "tap": "~0.4.4",
     "tape": "~1.1.1",
     "level-test": "~1.5.1",
-    "npmlog": "0.0.4",
-    "qs": "~0.6.5",
-    "level-session": "~0.2.1"
+    "npmlog": "0.0.4"
   },
   "keywords": [
     "edit",

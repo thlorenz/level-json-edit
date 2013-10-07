@@ -3,7 +3,6 @@
 var http           =  require('http')
   , fs             =  require('fs')
   , path           =  require('path')
-  , qs             =  require('qs')
   , build          =  require('./build')
   , levelEditor    =  require('../')
   , log            =  require('npmlog')
@@ -11,7 +10,7 @@ var http           =  require('http')
   , authentication =  require('./authentication')
 
 function serveError (res, err) {
-  console.error(err);
+  log.error('server', err);
   res.writeHead(500, { 'Content-Type': 'text/plain' });
   res.end(err.toString());
 }
@@ -31,41 +30,6 @@ function serveCss (res, name) {
   fs.createReadStream(path.join(__dirname, name + '.css')).pipe(res); 
 }
 
-function login (req, res) {
-  var body = '';
-  console.log(req.headers);
-  if ( req.method !== 'POST' 
-    || req.headers['content-type'] !== 'application/x-www-form-urlencoded') return;
-
-  req
-    .on('data', ondata)
-    .on('end', onend)
-
-  function antinuke() {
-    body = '';
-    res.writeHead(413, { 'Content-Type': 'text/plain' })
-    res.end()
-
-    req.connection.destroy();
-  }
-
-  function ondata (d) { 
-    if (body.length > 1e6) return antinuke();
-    body += d 
-  }
-
-  function onend () {
-    var creds = qs.parse(body);
-
-    log.info('server', 'creds', creds);
-
-    // redirect to index page
-    res.writeHead(302, { 'Content-Length': 0, 'Location': '/' })
-    res.end()
-  }
-
-}
-
 function serve404 (res) {
   res.writeHead(404);
   res.end();
@@ -77,7 +41,6 @@ var server = http.createServer(function (req, res) {
   if (req.url === '/bundle.js') return serveBundle(res);
   if (req.url === '/index.css') return serveCss(res, 'index');
   if (req.url === '/jsoneditor.css') return serveCss(res, 'jsoneditor');
-  if (req.url === '/login') return login(req, res);
 
   serve404(res);
 })

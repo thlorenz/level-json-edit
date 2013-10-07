@@ -13,6 +13,10 @@ var containers = {
   , saveButton :  document.getElementsByClassName('save-button')[0]
 };
 
+var loginForm = window.creds = document.getElementById('credentials')
+  , loginName = loginForm.getElementsByClassName('user-name')[0]
+  , loginPass = loginForm.getElementsByClassName('user-pass')[0]
+
 var le = levelEditor(config, containers)
 le.on('db-inited', ondbInited)
   .on('entry-loaded', onentryLoaded)
@@ -22,10 +26,17 @@ le.on('db-inited', ondbInited)
   .on('error', console.error.bind(console));
 
 function ondbInited (db, manifest) {
-  db.auth({ name: 'hallo', pass: 'welt' }, function (err, data) {
-    if (err) return console.error(err);
-    console.log('data', data);  
-  })
+  loginForm.onsubmit = function (ev) {
+    ev.preventDefault();
+    var name = loginName.value
+      , pass = loginPass.value
+
+    db.auth({ name: name, pass: pass }, function (err, data) {
+      if (err) return console.error(err);
+      console.log('data', data);  
+    })
+  }
+
 }
 
 function onentryLoaded (entry) {
