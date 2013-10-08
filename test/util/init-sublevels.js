@@ -7,7 +7,7 @@ function toIndexPut (k) {
   return { key: k, value : true, type: 'put' }
 }
 
-module.exports = function initSublevels (db, sep, cb) {
+module.exports = exports = function initSublevels (db, sep, cb) {
   var idxUno = db.sublevel('idx-uno', { sep: sep })
   var idxDos = db.sublevel('idx-dos', { sep: sep })
   var someOther = db.sublevel('some-other', { sep: sep })
@@ -23,6 +23,20 @@ module.exports = function initSublevels (db, sep, cb) {
   }
 }
 
-module.exports.isIndex = function isIndex (key) {
+exports.dataPrefix = 'data';
+
+exports.initData = function (db, sep, cb) {
+  var data = db.sublevel(exports.dataPrefix, { sep: sep, valueEncoding: 'json' })
+  data.batch([
+        { type: 'put' ,  key: 'uno-1' ,  value: { valof: 'uno-1' } }
+     ,  { type: 'put' ,  key: 'uno-2' ,  value: { valof: 'uno-2' } }
+     ,  { type: 'put' ,  key: 'uno'   ,  value: { valof: 'uno' } }
+     ,  { type: 'put' ,  key: 'dos-1' ,  value: { valof: 'dos-1' } }
+     ,  { type: 'put' ,  key: 'dos-2' ,  value: { valof: 'dos-2' } }
+     ,  { type: 'put' ,  key: 'dos'   ,  value: { valof: 'dos' } }
+  ] , cb)
+}
+
+exports.isIndex = function isIndex (key) {
   return (/^idx-/).test(key);
 }

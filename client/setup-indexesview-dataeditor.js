@@ -28,7 +28,7 @@ function noopValidate () { return true }
  */
 var go = module.exports = function (db, events, opts, editors, containers) {
   var data = db.sublevels[opts.dataPrefix];
-  var validate = opts.valiate || noopValidate;
+  var validate = opts.validate || noopValidate;
 
   sublevelIndexes(db.sublevels, opts, function (err, indexes) {
     if (err) return events.emit('error', err);
@@ -66,5 +66,6 @@ var go = module.exports = function (db, events, opts, editors, containers) {
       }
     }
 
+    events.emit('editors-initialized');
   })
 }
