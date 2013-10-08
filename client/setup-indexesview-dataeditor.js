@@ -2,10 +2,30 @@
 
 var sublevelIndexes = require('./sublevel-indexes');
 
-// TODO: needs tests at least to test validation on save
-
 function noopValidate () { return true }
 
+/**
+ * Sets up the view showing the indexes and the editor itself.
+ * Additionally it hooks up events to:
+ *  - show relevant data when item from indexes is selected
+ *  - save edited data when save button is clicked
+ * 
+ * @name exports
+ * @function
+ * @param db {Level} database
+ * @param events {EventEmitter} into which it will emit events
+ * @param opts {Object} with the following properties:
+ *    - validate {Function} (optional) called with the entry to be saved 
+ *      - return false if entry is invalid and shouldn't be saved
+ *      - return true if entry is valid and can be saved
+ *    - dataPrefix {String} the prefix of the sublevel that holds the actual data to show in the data editor
+ *    - options used to index the sublevels, i.e. isIndex {Function} -- see more in sublevel-indexes.js
+ * @param editors {Object} with the following properties:
+ *    - indexes {DOMElement} holding the indexes view
+ *    - editor: {DOMElement} holding the data editor
+ * @param containers {Object} containing other important 
+ *    - saveButton: {DOMElement} that represents the button that the user clicks in order to save edited data 
+ */
 var go = module.exports = function (db, events, opts, editors, containers) {
   var data = db.sublevels[opts.dataPrefix];
   var validate = opts.valiate || noopValidate;
@@ -36,6 +56,7 @@ var go = module.exports = function (db, events, opts, editors, containers) {
       containers.saveButton.onclick = function (ev) {
         var entry = { key: loaded.key, value: editors.editor.get() };
         events.emit('entry-saving', entry);
+
         if (!validate(entry, loaded)) return events.emit('save-invalid', entry, loaded);
 
         data.put(entry.key, entry.value, function (err) {
