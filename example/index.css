@@ -11,6 +11,10 @@
 }
 
 .data-editor {
+  height: 97%;
+}
+
+.data-editor-container {
   float: left;
   min-width: 49%;
   height: 95%;
@@ -39,8 +43,34 @@ input[disabled=true] {
   float: left;
 }
 
-.save-button {
+.save {
   font-size: 24px;
-  float: right;
+  background-color: #333333;
+  border: 1px solid #111;
+  border-radius: 5px;
+  padding: 2px;
+  margin: 2px;
+}
+
+.save .save-button {
   cursor: pointer;
+}
+
+.save .saved-indicator {
+  color: yellow;
+  font-size: 24px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+.hidden {
+  visibility: hidden;
+  opacity: 0;
+  transition:visibility 0s linear 0.5s,opacity 0.5s linear;
+}
+
+.visible {
+  opacity: 1.0;
+  visibility: visible;
+  transition: opacity 0.5s linear 0.5s,visibility 1.0s linear;
 }
