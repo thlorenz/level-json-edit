@@ -9,8 +9,9 @@ var multilevel    =  require('multilevel')
   , path          =  require('path')
   , EE            =  require('events').EventEmitter
 
-// TODO: authorize read vs. write
-//       intercept puts to determine correctness ?
+// TODO: intercept puts to determine correctness ?
+
+function defaultMixin (db) { }
   
 /**
  *
@@ -19,9 +20,10 @@ var multilevel    =  require('multilevel')
  * @param server
  * @param config {Object} with the following properties:
  *  - dbPath {String} path to level db
- *  - endpoint {String} ('/engine') any common string that server and client use to connect multilevel
  *  - isIndex {Function} should return true if prefix is for a sublevel that is an index, otherwise false
  *  - dataPrefix {String} the prefix of the sublevel that contains the json data
+ *  - endpoint {String} ('/engine') any common string that server and client use to connect multilevel
+ *  - mixin {Function} (optional) mixin extra functionality into the db, i.e. install a level-live-stream
  *  @param authentication {Object} passed to multilevel server creation (https://github.com/juliangruber/multilevel#authentication)
  *  - auth: {Function} to authenticate user
  *  - access: {Function} called when db is accessed with particular method, throw Error if user is not authorized
@@ -29,7 +31,8 @@ var multilevel    =  require('multilevel')
 var go = module.exports = function (server, config, authentication) { 
   var registeredIndexSubs = []
     , inited = null
-    , events = new EE();
+    , events = new EE()
+    , mixin = config.mixin || defaultMixin
 
   function initdb (cb) {
     if (inited) return cb(null, inited);
@@ -53,6 +56,7 @@ var go = module.exports = function (server, config, authentication) {
           })
 
         db.sublevel(config.dataPrefix, { valueEncoding: 'json' });
+        mixin(db, registeredIndexSubs);
 
         var manifest = levelManifest(db);
         events.emit('inited-db', config.dbPath, db);
