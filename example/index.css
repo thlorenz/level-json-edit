@@ -39,6 +39,11 @@ input[disabled=true] {
   color: gray;
 }
 
+input[type=button],
+input[type=submit] {
+  cursor: pointer;
+}
+
 #credentials {
   float: left;
 }
@@ -48,12 +53,10 @@ input[disabled=true] {
   background-color: #333333;
   border: 1px solid #111;
   border-radius: 5px;
-  padding: 2px;
-  margin: 2px;
-}
-
-.save .save-button {
-  cursor: pointer;
+  margin-left: 2px;
+  margin-top: -5px;
+  width: 100px;
+  float: left;
 }
 
 .save .saved-indicator {

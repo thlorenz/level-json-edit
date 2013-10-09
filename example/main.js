@@ -39,6 +39,10 @@ function hideSaved () {
   savedIndicator.classList.add('hidden')  
 }
 
+function showSave () {
+  saveButton.classList.remove('hidden')
+}
+
 var le = levelEditor(config, containers)
 le.on('db-inited', ondbInited)
   .on('entry-loaded', onentryLoaded)
@@ -68,6 +72,7 @@ function ondbInited (db, manifest) {
 function onentryLoaded (entry) {
   le.editor.expandAll();
   hideSaved();
+  showSave();
   //siteView.src = root + entry.key;
 }
 
