@@ -29,7 +29,8 @@
     "tap": "~0.4.4",
     "tape": "~1.1.1",
     "level-test": "~1.5.1",
-    "npmlog": "0.0.4"
+    "npmlog": "0.0.4",
+    "level-live-stream": "~1.4.7"
   },
   "keywords": [
     "edit",

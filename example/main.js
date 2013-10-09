@@ -4,6 +4,7 @@
 
 var levelEditor =  require('../')
   , config      =  require('./config')
+  , sublevels = require('./sublevels')
 
 var siteView = document.getElementsByClassName('site-view')[0];
 var root = 'http://www.concierge.com/travelguide';
@@ -51,8 +52,26 @@ le.on('db-inited', ondbInited)
   .on('entry-saved', onentrySaved)
   .on('error', onerror);
 
+function observe (db) {
+  function onLiveUpdate (type, data) {
+    console.log('updated %s: %s', type, data);
+  }
+
+  var indexes = sublevels(db).idx
+    , opts = { tail: true, old: false };
+
+  indexes.byHasTodo
+    .liveStream(opts)
+    .on('data', onLiveUpdate.bind(null, 'hastodo'))
+
+  indexes.byEdited
+    .liveStream(opts)
+    .on('data', onLiveUpdate.bind(null, 'edited'))
+}
+
 function ondbInited (db, manifest) {
-  loginForm.onsubmit = function (ev) {
+
+  function onSubmitLogin (ev) {
     ev.preventDefault();
     var name = loginName.value
       , pass = loginPass.value
@@ -67,7 +86,10 @@ function ondbInited (db, manifest) {
     })
   }
 
+  loginForm.onsubmit = onSubmitLogin;
+  observe(db);
 }
+
 
 function onentryLoaded (entry) {
   le.editor.expandAll();
