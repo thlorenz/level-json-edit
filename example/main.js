@@ -7,7 +7,7 @@ var levelEditor =  require('../')
   , sublevels = require('./sublevels')
 
 var siteView = document.getElementsByClassName('site-view')[0];
-var root = 'http://www.concierge.com/travelguide';
+var root = 'http://www.guider.com/travelguide';
 
 var saveButton     =  document.getElementsByClassName('save-button')[0]
   , savedIndicator =  document.getElementsByClassName('saved-indicator')[0]
