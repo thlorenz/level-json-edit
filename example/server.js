@@ -8,6 +8,7 @@ var http           =  require('http')
   , log            =  require('npmlog')
   , config         =  require('./config')
   , authentication =  require('./authentication')
+  , dbOperations   =  require('./db-operations')
 
 function serveError (res, err) {
   log.error('server', err);
@@ -49,13 +50,6 @@ function inspect(obj, depth) {
   return require('util').inspect(obj, false, depth || 5, true);
 }
 
-function logOperation (type, arg1, arg2) {
-  log.verbose('server'
-    , type, arg1 && inspect(arg1)
-    , arg2 && typeof arg2 !== 'function' && inspect(arg2)
-  ) 
-}
-
 server.on('listening', function (address) {
   var a = server.address();
   log.info('server', 'listening: http://%s:%d', a.address, a.port);  
@@ -77,9 +71,7 @@ server.on('listening', function (address) {
 
   function oninitedDB (dbPath, db) {
     log.info('server', 'initialized db', dbPath);
-    db.on('put', logOperation.bind(null, 'put'))
-      .on('del', logOperation.bind(null, 'del'))
-      .on('batch', logOperation.bind(null, 'batch'))
+    dbOperations(db);
   }
 
   function onclosedDB (dbPath, err) {
