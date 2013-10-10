@@ -2,15 +2,19 @@
 
 var engine           =  require('engine.io-stream')
   , xhr              =  require('xhr')
- ,  multilevel       =  require('multilevel')
- ,  EE               =  require('events').EventEmitter
- ,  setupViewNeditor =  require('./setup-indexesview-dataeditor')
-  , renderEditor = require('./render-jsoneditor')
+  , multilevel       =  require('multilevel')
+  , reconnect        =  require('reconnect-engine')
+  , EE               =  require('events').EventEmitter
+  , setupViewNeditor =  require('./setup-indexesview-dataeditor')
+  , renderEditor     =  require('./render-jsoneditor')
 
 function getManifest (cb) {
   xhr({ 
       uri: '/level-manifest'
     , headers: { 'Content-Type': 'application/json' } 
+    // since determining the sublevel tree server side when first client request comes in,
+    // that first request may take a while to get served -- 20s is actually reasonable
+    , timeout: 20000
   }, onresponse);
   function onresponse (err, res, body) {
     if (err) return cb(err);
@@ -56,8 +60,10 @@ var go = module.exports = function (opts, containers) {
     if (err) return console.error(err);
 
     var db = multilevel.client(manifest);
-    var con = engine(opts.endpoint || '/engine')
-    con.pipe(db.createRpcStream()).pipe(con)
+    reconnect(function (con) { 
+      con.pipe(db.createRpcStream()).pipe(con) 
+    })
+    .connect(opts.endpoint || '/engine')
 
     events.emit('db-inited', db, manifest)
 
