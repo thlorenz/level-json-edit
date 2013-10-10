@@ -1,6 +1,7 @@
 'use strict';
 
-var sublevelIndexes = require('./sublevel-indexes');
+var sublevelIndexes = require('./sublevel-indexes')
+  , indexesRefresher = require('./indexes-refresher')
 
 function noopValidate () { return true }
 
@@ -68,4 +69,8 @@ var go = module.exports = function (db, events, opts, editors, containers) {
 
     events.emit('editors-initialized');
   })
+
+  return {
+    refreshIndexes: indexesRefresher(db.sublevels, editors.indexes, opts)
+  }
 }

@@ -16,6 +16,7 @@ function getManifest (cb) {
     // that first request may take a while to get served -- 20s is actually reasonable
     , timeout: 20000
   }, onresponse);
+
   function onresponse (err, res, body) {
     if (err) return cb(err);
     cb(null, JSON.parse(body));
@@ -70,6 +71,10 @@ var go = module.exports = function (opts, containers) {
     setupViewNeditor(db, events, opts, editors, containers);
   }
 
-  return { on: events.on.bind(events), indexes: indexesViewer, editor: dataEditor };
+  return { 
+      on: events.on.bind(events)
+    , indexes: indexesViewer
+    , editor: dataEditor 
+  };
 };
 
