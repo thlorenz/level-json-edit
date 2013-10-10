@@ -61,6 +61,7 @@ Additionally the example is currently incomplete.
  *    - on {Function} allows subscribing to various events
  *    - indexes {Object} the indexes viewer (json-editor)
  *    - editor {Object} the data editor (json-editor)
+ *    - refreshIndexes {Function} refreshes the indexes view with the current data in index sublevels and calls back when finished
  */
 ```
 
