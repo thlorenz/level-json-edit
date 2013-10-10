@@ -14,6 +14,7 @@ var multilevel    =  require('multilevel')
 function defaultMixin (db) { }
   
 /**
+ * Initializes server side end of level-json-edit.
  *
  * @name exports
  * @function

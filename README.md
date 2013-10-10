@@ -22,6 +22,7 @@ Additionally the example is currently incomplete.
 
 ```
 /**
+ * Initializes server side end of level-json-edit.
  *
  * @name exports
  * @function
