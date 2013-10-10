@@ -1,6 +1,6 @@
 {
   "name": "level-json-edit",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Taking editing json to the next level with multilevel.",
   "main": "index.js",
   "browser": "./client/level-json-edit",
