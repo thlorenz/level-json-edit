@@ -7,7 +7,7 @@ module.exports =  function indexRefresher (sublevels, indexesEditor, opts) {
     sublevelIndexes(sublevels, opts, function (err, indexes) {
       if (err) return cb(err);
       indexesEditor.set(indexes);
-      cb();
+      if (cb) cb();
     })
   }
 }

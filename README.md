@@ -49,7 +49,7 @@ Additionally the example is currently incomplete.
  * @name exports
  * @function
  * @param opts {Object}
- *  - isIndes {Function} should return true if sublevel is an index, false if not
+ *  - isIndex {Function} should return true if sublevel is an index, false if not
  *  - valiate {Function} (optional) return false if the data about to be saved is not valid
  *, - dataPrefix {String} the prefix of the sublevel holding the data
  * @param containers {Object}

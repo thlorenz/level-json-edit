@@ -7,6 +7,7 @@ var engine           =  require('engine.io-stream')
   , EE               =  require('events').EventEmitter
   , setupViewNeditor =  require('./setup-indexesview-dataeditor')
   , renderEditor     =  require('./render-jsoneditor')
+  , indexesRefresher =  require('./indexes-refresher')
 
 function getManifest (cb) {
   xhr({ 
@@ -29,7 +30,7 @@ function getManifest (cb) {
  * @name exports
  * @function
  * @param opts {Object}
- *  - isIndes {Function} should return true if sublevel is an index, false if not
+ *  - isIndex {Function} should return true if sublevel is an index, false if not
  *  - valiate {Function} (optional) return false if the data about to be saved is not valid
  *, - dataPrefix {String} the prefix of the sublevel holding the data
  * @param containers {Object}
@@ -40,41 +41,55 @@ function getManifest (cb) {
  *    - on {Function} allows subscribing to various events
  *    - indexes {Object} the indexes viewer (json-editor)
  *    - editor {Object} the data editor (json-editor)
+ *    - refreshIndexes {Function} refreshes the indexes view with the current data in index sublevels and calls back when finished
  */
-var go = module.exports = function (opts, containers) {
-  var events = new EE();
+var go = module.exports = LevelJsonEditor;
+var proto = LevelJsonEditor.prototype;
 
-  var indexesViewer = renderEditor(
+function LevelJsonEditor (opts, containers) {
+  if (!(this instanceof LevelJsonEditor)) return new LevelJsonEditor(opts, containers);
+
+  var events = new EE();
+  this._events = events;
+  this.on = events.on.bind(events)
+
+  this._opts = opts;
+  this._endpoint = opts.endpoint || '/engine';
+  this._containers = containers;
+
+  this.indexesViewer = renderEditor(
       { indexes: 'loading ...' }
     , containers.indexes
     , 'view'
   )
-  var dataEditor = renderEditor(
+
+  this.editor = renderEditor(
       { click: 'entry from indexes to load data here' }
     , containers.editor
   );
-  var editors = { indexes: indexesViewer, editor: dataEditor };
 
-  getManifest(onmanifest)
+  getManifest(this._onmanifest.bind(this));
+}
 
-  function onmanifest (err, manifest) {
-    if (err) return console.error(err);
+proto.refreshIndexes = function (cb) {
+  if (!this._refreshIndexes) return console.error('cannot refresh indexes before I initialized db');
+  this._refreshIndexes(cb);
+}
 
-    var db = multilevel.client(manifest);
-    reconnect(function (con) { 
-      con.pipe(db.createRpcStream()).pipe(con) 
-    })
-    .connect(opts.endpoint || '/engine')
+proto._onmanifest = function (err, manifest) {
+  if (err) return console.error(err);
+  var self = this;
 
-    events.emit('db-inited', db, manifest)
+  this._db = multilevel.client(manifest);
+  reconnect(function (con) { 
+    con.pipe(self._db.createRpcStream()).pipe(con) 
+  })
+  .connect(self._endpoint)
 
-    setupViewNeditor(db, events, opts, editors, containers);
-  }
+  self._events.emit('db-inited', self._db, manifest)
 
-  return { 
-      on: events.on.bind(events)
-    , indexes: indexesViewer
-    , editor: dataEditor 
-  };
-};
+  var editors = { indexes: this.indexesViewer, editor: this.editor };
+  setupViewNeditor(this._db, this._events, this._opts, editors, this._containers);
 
+  this._refreshIndexes = indexesRefresher(this._db.sublevels, this.indexesViewer, this._opts);
+}
