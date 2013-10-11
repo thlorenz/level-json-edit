@@ -56,7 +56,7 @@ var go = module.exports = function (db, events, opts, editors, containers) {
       // TODO: disable while undo is not possible?
       containers.saveButton.onclick = function (ev) {
         var entry = { key: loaded.key, value: editors.editor.get() };
-        events.emit('entry-saving', entry);
+        events.emit('entry-saving', entry, loaded);
 
         if (!validate(entry, loaded)) return events.emit('save-invalid', entry, loaded);
 
