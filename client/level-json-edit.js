@@ -2,6 +2,7 @@
 
 var engine           =  require('engine.io-stream')
   , xhr              =  require('xhr')
+  , xtend            =  require('xtend')
   , multilevel       =  require('multilevel')
   , reconnect        =  require('reconnect-engine')
   , EE               =  require('events').EventEmitter
@@ -60,25 +61,34 @@ function LevelJsonEditor (opts, containers) {
   this.indexesViewer = renderEditor(
       { indexes: 'loading ...' }
     , containers.indexes
-    , 'view'
+    , xtend(this._defaultIndexesViewer, opts.indexesViewer) 
   )
+
 
   this.editor = renderEditor(
       { click: 'entry from indexes to load data here' }
     , containers.editor
-    , 'form'
-    , this._onEditorChange.bind(this)
-    , this._onEditorError.bind(this)
+    , xtend(this._defaultEditor, opts.editor)
   );
 
   getManifest(this._onmanifest.bind(this));
 }
 
-
-
 proto.refreshIndexes = function (cb) {
   if (!this._refreshIndexes) return this._emitError('Cannot refresh indexes before I initialized db');
   this._refreshIndexes(cb);
+}
+
+proto._defaultEditor = function () {
+  return {
+      mode   :  'form'
+    , change :  this._onEditorChange.bind(this)
+    , error  :  this._onEditorError.bind(this)
+  }
+}
+
+proto._defaultIndexesViewer = function () {
+  return { mode: 'view' };
 }
 
 proto.refreshData = function (cb) {
