@@ -66,14 +66,36 @@ function LevelJsonEditor (opts, containers) {
   this.editor = renderEditor(
       { click: 'entry from indexes to load data here' }
     , containers.editor
+    , 'form'
+    , this._onEditorChange.bind(this)
+    , this._onEditorError.bind(this)
   );
 
   getManifest(this._onmanifest.bind(this));
 }
 
+
+
 proto.refreshIndexes = function (cb) {
-  if (!this._refreshIndexes) return console.error('cannot refresh indexes before I initialized db');
+  if (!this._refreshIndexes) return this._emitError('Cannot refresh indexes before I initialized db');
   this._refreshIndexes(cb);
+}
+
+proto.refreshData = function (cb) {
+  if (!this._refreshData) return this._emitError('Cannot refresh data before I initialized db');
+  this._refreshData(cb);
+}
+
+proto._onEditorChange = function () {
+  this._events.emit('editor-changed', this.editor.get());
+}
+
+proto._onEditorError = function (err) {
+  this._events.emit('error', err);
+}
+
+proto._emitError = function (s) {
+  this._events.emit('error', new Error(s));
 }
 
 proto._onmanifest = function (err, manifest) {
@@ -89,7 +111,8 @@ proto._onmanifest = function (err, manifest) {
   self._events.emit('db-inited', self._db, manifest)
 
   var editors = { indexes: this.indexesViewer, editor: this.editor };
-  setupViewNeditor(this._db, this._events, this._opts, editors, this._containers);
+  var setup = setupViewNeditor(this._db, this._events, this._opts, editors, this._containers);
 
   this._refreshIndexes = indexesRefresher(this._db.sublevels, this.indexesViewer, this._opts);
+  this._refreshData = setup.refreshData;
 }

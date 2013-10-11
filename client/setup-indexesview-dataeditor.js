@@ -1,7 +1,6 @@
 'use strict';
 
 var sublevelIndexes = require('./sublevel-indexes')
-  , indexesRefresher = require('./indexes-refresher')
 
 function noopValidate () { return true }
 
@@ -30,11 +29,26 @@ function noopValidate () { return true }
 var go = module.exports = function (db, events, opts, editors, containers) {
   var data = db.sublevels[opts.dataPrefix];
   var validate = opts.validate || noopValidate;
+  var loaded;
+
+  function loadData(key, suppressEvent, cb) {
+    data.get(key, function (err, val) {
+      if (err) {
+        if (cb) cb(err);
+        return events.emit('error', err);
+      }
+
+      loaded = { key: key, value: val };
+      editors.editor.set(val);
+
+      if (!suppressEvent) events.emit('entry-loaded', loaded);
+      if (cb) cb();
+    });
+  }
 
   sublevelIndexes(db.sublevels, opts, function (err, indexes) {
     if (err) return events.emit('error', err);
-
-    var loaded = null;
+    loaded = null;
 
     editors.indexes.set(indexes);
 
@@ -42,13 +56,7 @@ var go = module.exports = function (db, events, opts, editors, containers) {
       var tgt = ev.target;
       if ((/^value/).test(tgt.getAttribute('class'))) {
         var key = tgt.innerText;
-
-        data.get(key, function (err, val) {
-          if (err) return console.error(err);
-          loaded = { key: key, value: val };
-          editors.editor.set(val);
-          events.emit('entry-loaded', loaded);
-        });
+        loadData(key);
       }
     }
 
@@ -70,7 +78,10 @@ var go = module.exports = function (db, events, opts, editors, containers) {
     events.emit('editors-initialized');
   })
 
-  return {
-    refreshIndexes: indexesRefresher(db.sublevels, editors.indexes, opts)
+  function refreshData (cb) {
+    if (!loaded) return events.emit('error', 'cannot refresh data when none has been loaded');
+    loadData(loaded.key, true, cb);
   }
+
+  return { refreshData:  refreshData }
 }
