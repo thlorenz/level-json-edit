@@ -61,14 +61,14 @@ function LevelJsonEditor (opts, containers) {
   this.indexesViewer = renderEditor(
       { indexes: 'loading ...' }
     , containers.indexes
-    , xtend(this._defaultIndexesViewer, opts.indexesViewer) 
+    , xtend(this._defaultIndexesViewer(), opts.indexesViewer) 
   )
 
 
   this.editor = renderEditor(
       { click: 'entry from indexes to load data here' }
     , containers.editor
-    , xtend(this._defaultEditor, opts.editor)
+    , xtend(this._defaultEditor(), opts.editor)
   );
 
   getManifest(this._onmanifest.bind(this));
