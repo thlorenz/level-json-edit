@@ -39,6 +39,8 @@ var go = module.exports = function (db, events, opts, editors, containers) {
       }
 
       loaded = { key: key, value: val };
+      if (!suppressEvent) events.emit('entry-loading', loaded);
+
       editors.editor.set(val);
 
       if (!suppressEvent) events.emit('entry-loaded', loaded);
