@@ -77,7 +77,7 @@ var go = module.exports = function (db, events, opts, editors, containers) {
       }
     }
 
-    events.emit('editors-initialized');
+    events.emit('editor-initialized');
   })
 
   function refreshData (cb) {
